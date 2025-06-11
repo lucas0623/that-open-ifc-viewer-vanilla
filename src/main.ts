@@ -5,9 +5,7 @@ import * as OBC from "@thatopen/components";
 import * as WEBIFC from "web-ifc";
 import './style.css';
 
-function main() {
-
-  //boiler plate of setting up the scene 
+//boiler plate of setting up the scene 
   const container = document.querySelector('#scene-container') as HTMLElement;
   const components = new OBC.Components();
   const worlds = components.get(OBC.Worlds);
@@ -17,11 +15,15 @@ function main() {
   OBC.SimpleCamera,
   OBC.SimpleRenderer
 >();
+const fragments = components.get(OBC.FragmentsManager);
+const fragmentIfcLoader = components.get(OBC.IfcLoader);
 
+function main() {
+
+  
 world.scene = new OBC.SimpleScene(components);
 world.renderer = new OBC.SimpleRenderer(components, container);
 world.camera = new OBC.SimpleCamera(components);
-
 components.init();
 
 world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
@@ -34,8 +36,7 @@ const grids = components.get(OBC.Grids);
 const grid = grids.create(world);
 
 //Try IFC loader
-const fragments = components.get(OBC.FragmentsManager);
-const fragmentIfcLoader = components.get(OBC.IfcLoader);
+
 fragmentIfcLoader.setup();
 
 fragmentIfcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
@@ -173,18 +174,26 @@ function initialize(){
 
 }
 function createUI(){
-  
+
 }
+
+
 async function loadIfc() {
   console.log("Loading IFC file...");
   const file = await fetch(
-    "https://thatopen.github.io/engine_components/resources/small.ifc",
+    //"https://thatopen.github.io/engine_components/resources/small.ifc",
+    //"https://raw.githubusercontent.com/lucas0623/XcelStruct/refs/heads/master/ifc4_SAP2000%20str.ifc?token=GHSAT0AAAAAADCV3ZC7QK5CA7ROCUYYLEFY2CJFKQA",
+    //"C:\Users\lucasleung\OneDrive\21 Temp\ifc sample\SAP to IFC.ifc",
+    "https://raw.githubusercontent.com/lucas0623/XcelStruct/refs/heads/master/3A35X-GCL-STR-MDL-0001-P00-HLXX-WS4-00.ifc?token=GHSAT0AAAAAADCV3ZC6GXKVDNRI4PXV7NVO2CJFNEA",
   );
+  // const file = setupFilePicker()
   const data = await file.arrayBuffer();
   const buffer = new Uint8Array(data);
   const model = await fragmentIfcLoader.load(buffer);
   model.name = "example";
   world.scene.three.add(model);
+  console.log("IFC file loaded successfully!");
+  console.log(model);
 }
 
 function download(file: File) {
