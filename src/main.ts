@@ -5,7 +5,8 @@ import * as OBC from "@thatopen/components";
 import * as WEBIFC from "web-ifc";
 import './style.css';
 
-//boiler plate of setting up the scene 
+
+//boiler plate of setting up the scene - declaration of world objects. 
   const container = document.querySelector('#scene-container') as HTMLElement;
   const components = new OBC.Components();
   const worlds = components.get(OBC.Worlds);
@@ -18,32 +19,50 @@ import './style.css';
 const fragments = components.get(OBC.FragmentsManager);
 const fragmentIfcLoader = components.get(OBC.IfcLoader);
 
+
 function main() {
+  initialize();
+  createSampleScene();
+  createUI();
+  setupStats();
 
-  
-world.scene = new OBC.SimpleScene(components);
-world.renderer = new OBC.SimpleRenderer(components, container);
-world.camera = new OBC.SimpleCamera(components);
-components.init();
+}
 
-world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
+function setupStats(){
+  //Stats setup
+const stats = new Stats();
+stats.showPanel(2);
+document.body.append(stats.dom);
+stats.dom.style.left = "0px";
+stats.dom.style.zIndex = "unset";
+world.renderer.onBeforeUpdate.add(() => stats.begin());
+world.renderer.onAfterUpdate.add(() => stats.end());
+}
 
-world.scene.setup();
-//world.scene.three.background = null;
+function initialize(){
+  world.scene = new OBC.SimpleScene(components);
+  world.renderer = new OBC.SimpleRenderer(components, container);
+  world.camera = new OBC.SimpleCamera(components);
+  components.init();
 
-//Setup grid
-const grids = components.get(OBC.Grids);
-const grid = grids.create(world);
+  world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
 
-//Try IFC loader
+  world.scene.setup();
+  //world.scene.three.background = null;
 
-fragmentIfcLoader.setup();
+  //Setup grid
+  const grids = components.get(OBC.Grids);
+  const grid = grids.create(world);
 
-fragmentIfcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
+  //Try IFC loader
 
+  fragmentIfcLoader.setup();
 
+  fragmentIfcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
+}
 
-//Sample scene setup
+function createSampleScene() {
+  //Sample scene setup
   const material = new THREE.MeshLambertMaterial({
   color: "yellow",
   transparent: true,
@@ -57,22 +76,10 @@ cube.rotation.x += Math.PI / 4.2;
 cube.rotation.y += Math.PI / 4.2;
 cube.rotation.z += Math.PI / 4.2;
 cube.updateMatrixWorld();
+}
 
-
-// const resizeSystem = new ResizeSystem(components);
-// components.add(resizeSystem);
-// resizeSystem.resize();
-
-//Stats setup
-const stats = new Stats();
-stats.showPanel(2);
-document.body.append(stats.dom);
-stats.dom.style.left = "0px";
-stats.dom.style.zIndex = "unset";
-world.renderer.onBeforeUpdate.add(() => stats.begin());
-world.renderer.onAfterUpdate.add(() => stats.end());
-
-//UI setup
+function createUI(){
+  //UI setup
 const uiContainer = document.querySelector('#ui-container') as HTMLElement;
 BUI.Manager.init();
 const panel = BUI.Component.create<BUI.PanelSection>(() => {
@@ -167,24 +174,16 @@ const button = BUI.Component.create<BUI.PanelSection>(() => {
 });
 
 uiContainer.append(button);
-
-}
-
-function initialize(){
-
-}
-function createUI(){
-
 }
 
 
 async function loadIfc() {
   console.log("Loading IFC file...");
   const file = await fetch(
-    //"https://thatopen.github.io/engine_components/resources/small.ifc",
+    "https://thatopen.github.io/engine_components/resources/small.ifc",
     //"https://raw.githubusercontent.com/lucas0623/XcelStruct/refs/heads/master/ifc4_SAP2000%20str.ifc?token=GHSAT0AAAAAADCV3ZC7QK5CA7ROCUYYLEFY2CJFKQA",
     //"C:\Users\lucasleung\OneDrive\21 Temp\ifc sample\SAP to IFC.ifc",
-    "https://raw.githubusercontent.com/lucas0623/XcelStruct/refs/heads/master/3A35X-GCL-STR-MDL-0001-P00-HLXX-WS4-00.ifc?token=GHSAT0AAAAAADCV3ZC6GXKVDNRI4PXV7NVO2CJFNEA",
+    //"https://raw.githubusercontent.com/lucas0623/XcelStruct/refs/heads/master/3A35X-GCL-STR-MDL-0001-P00-HLXX-WS4-00.ifc?token=GHSAT0AAAAAADCV3ZC7IUWB7OZRBVSNLVPQ2CJHTQQ",
   );
   // const file = setupFilePicker()
   const data = await file.arrayBuffer();
