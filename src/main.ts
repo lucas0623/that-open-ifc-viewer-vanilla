@@ -87,9 +87,15 @@ const panel = BUI.Component.create<BUI.PanelSection>(() => {
     <bim-panel label="Worlds Tutorial" class="options-menu">
       <bim-panel-section collapsed label="Controls">
       
-        <bim-button label="Load IFC"
+        <bim-button label="Load Online IFC"
           @click="${() => {
             loadIfc();
+          }}">
+        </bim-button>  
+        
+        <bim-button label="Load Local IFC"
+          @click="${() => {
+            openLocalIfc();
           }}">
         </bim-button>  
             
@@ -181,18 +187,57 @@ async function loadIfc() {
   console.log("Loading IFC file...");
   const file = await fetch(
     "https://thatopen.github.io/engine_components/resources/small.ifc",
-    //"https://raw.githubusercontent.com/lucas0623/XcelStruct/refs/heads/master/ifc4_SAP2000%20str.ifc?token=GHSAT0AAAAAADCV3ZC7QK5CA7ROCUYYLEFY2CJFKQA",
-    //"C:\Users\lucasleung\OneDrive\21 Temp\ifc sample\SAP to IFC.ifc",
-    //"https://raw.githubusercontent.com/lucas0623/XcelStruct/refs/heads/master/3A35X-GCL-STR-MDL-0001-P00-HLXX-WS4-00.ifc?token=GHSAT0AAAAAADCV3ZC7IUWB7OZRBVSNLVPQ2CJHTQQ",
-  );
-  // const file = setupFilePicker()
-  const data = await file.arrayBuffer();
+  )
+  const data = await file.arrayBuffer();  
   const buffer = new Uint8Array(data);
+  
   const model = await fragmentIfcLoader.load(buffer);
   model.name = "example";
   world.scene.three.add(model);
   console.log("IFC file loaded successfully!");
   console.log(model);
+}
+
+async function openLocalIfc() {
+  console.log("Loading local IFC file...");
+  
+  // Create file input element
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = '.ifc';
+  
+  // Set up file input change handler
+  fileInput.onchange = async (event) => {
+    const target = event.target as HTMLInputElement;
+    const files = target.files;
+    
+    if (!files || files.length === 0) {
+      console.log("No file selected");
+      return;
+    }
+    
+    const file = files[0];
+    console.log("Selected file:", file.name, "Size:", file.size, "bytes");
+    
+    try {
+      const data = await file.arrayBuffer();
+      console.log("ArrayBuffer byte length:", data.byteLength);
+      
+      const buffer = new Uint8Array(data);
+      console.log("Uint8Array length:", buffer.length);
+      
+      const model = await fragmentIfcLoader.load(buffer);
+      model.name = file.name.replace('.ifc', '');
+      world.scene.three.add(model);
+      console.log("Local IFC file loaded successfully!");
+      console.log(model);
+    } catch (error) {
+      console.error("Error loading IFC file:", error);
+    }
+  };
+  
+  // Trigger file picker
+  fileInput.click();
 }
 
 function download(file: File) {
