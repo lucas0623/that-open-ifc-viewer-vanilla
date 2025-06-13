@@ -2,7 +2,7 @@ import * as THREE from "three";
 import * as BUI from "@thatopen/ui";
 import Stats from "stats.js";
 import * as OBC from "@thatopen/components";
-import * as WEBIFC from "web-ifc";
+//import * as WEBIFC from "web-ifc";
 import './style.css';
 
 
@@ -19,7 +19,10 @@ import './style.css';
 const fragments = components.get(OBC.FragmentsManager);
 const fragmentIfcLoader = components.get(OBC.IfcLoader);
 
-
+//Setup grid
+  const grids = components.get(OBC.Grids);
+  
+  
 function main() {
   initialize();
   createSampleScene();
@@ -35,8 +38,10 @@ stats.showPanel(2);
 document.body.append(stats.dom);
 stats.dom.style.left = "0px";
 stats.dom.style.zIndex = "unset";
-world.renderer.onBeforeUpdate.add(() => stats.begin());
-world.renderer.onAfterUpdate.add(() => stats.end());
+if (world.renderer) {
+  world.renderer.onBeforeUpdate.add(() => stats.begin());
+  world.renderer.onAfterUpdate.add(() => stats.end());
+}
 }
 
 function initialize(){
@@ -50,9 +55,7 @@ function initialize(){
   world.scene.setup();
   //world.scene.three.background = null;
 
-  //Setup grid
-  const grids = components.get(OBC.Grids);
-  const grid = grids.create(world);
+  
 
   //Try IFC loader
 
@@ -81,6 +84,7 @@ cube.updateMatrixWorld();
 function createUI(){
   //UI setup
 const uiContainer = document.querySelector('#ui-container') as HTMLElement;
+const grid = grids.create(world);
 BUI.Manager.init();
 const panel = BUI.Component.create<BUI.PanelSection>(() => {
   return BUI.html`
