@@ -3,13 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://lucas0623.github.io/that-open-ifc-viewer-vanilla/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "@types/three": "^0.177.0",
+    "gh-pages": "^6.3.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
     "vite": "^6.3.5"
