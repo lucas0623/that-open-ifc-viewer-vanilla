@@ -1,4 +1,4 @@
-// import * as THREE from "three";
+import * as THREE from "three";
 // import * as BUI from "@thatopen/ui";
 // import Stats from "stats.js";
 import * as OBC from "@thatopen/components";
@@ -59,10 +59,8 @@ function main() {
   sceneManager.createSampleScene();
 
   // Set aspect ratio and update projection matrix
-  world.camera.three.aspect = container.clientWidth / container.clientHeight;
-  //world.renderer?.three.setSize(container.clientWidth, container.clientHeight);
-  //world.renderer?.three.setPixelRatio(window.devicePixelRatio);
-  world.camera.three.updateProjectionMatrix();
+  (world.camera.three as THREE.PerspectiveCamera).aspect = container.clientWidth / container.clientHeight;
+  (world.camera.three as THREE.PerspectiveCamera).updateProjectionMatrix();
   
   //world.camera.three.updateProjectionMatrix();
   // Debug logs for aspect ratio investigation

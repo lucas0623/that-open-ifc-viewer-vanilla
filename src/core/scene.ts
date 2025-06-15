@@ -13,7 +13,6 @@ export class SceneManager {
 
   initialize() {
     this.world.scene = new OBC.SimpleScene(this.components);
-    this.world.scene.setup();
   }
 
   createSampleScene() {

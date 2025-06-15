@@ -12,15 +12,15 @@ interface GridConfig {
   secondarySize: number;
 }
 
-interface SceneConfig {
-  backgroundColor: THREE.Color;
-  directionalLight: {
-    intensity: number;
-  };
-  ambientLight: {
-    intensity: number;
-  };
-}
+// interface SceneConfig {
+//   backgroundColor: THREE.Color;
+//   directionalLight: {
+//     intensity: number;
+//   };
+//   ambientLight: {
+//     intensity: number;
+//   };
+// }
 
 export class PanelManager {
   private world: OBC.World;
