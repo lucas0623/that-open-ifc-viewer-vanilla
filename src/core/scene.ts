@@ -13,6 +13,11 @@ export class SceneManager {
 
   initialize() {
     this.world.scene = new OBC.SimpleScene(this.components);
+    //const light = this.world.scene.directionalLights.set("light", new THREE.DirectionalLight(0xffffff, 1.5));
+    const light = new THREE.DirectionalLight(0xffffff, 1.5);
+    light.position.set(5, 5, 5);
+    this.world.scene.directionalLights.set("main", light);
+    this.world.scene.three.add(light);
   }
 
   createSampleScene() {
