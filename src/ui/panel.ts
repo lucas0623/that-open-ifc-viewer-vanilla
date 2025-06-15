@@ -49,73 +49,93 @@ export class PanelManager {
     this.createMenuButton();
   }
 
+  private createGridControls() {
+    return BUI.html`
+      <bim-panel-section collapsed label="Grid Controls">
+        <bim-checkbox label="Grid visible" checked 
+          @change="${({ target }: { target: BUI.Checkbox }) => {
+            this.grid.config.visible = target.value;
+          }}">
+        </bim-checkbox>
+
+        <bim-color-input 
+          label="Grid Color" color="#bbbbbb" 
+          @input="${({ target }: { target: BUI.ColorInput }) => {
+            this.grid.config.color = new THREE.Color(target.color);
+          }}">
+        </bim-color-input>
+        
+        <bim-number-input 
+          slider step="0.1" label="Grid primary size" value="1" min="0" max="10"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            this.grid.config.primarySize = target.value;
+          }}">
+        </bim-number-input>
+        
+        <bim-number-input 
+          slider step="0.1" label="Grid secondary size" value="10" min="0" max="20"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            this.grid.config.secondarySize = target.value;
+          }}">
+        </bim-number-input>
+      </bim-panel-section>
+    `;
+  }
+
+  private createSceneControls() {
+    return BUI.html`
+      <bim-panel-section collapsed label="Scene Controls">
+        <bim-color-input 
+          label="Background Color" color="#202932" 
+          @input="${({ target }: { target: BUI.ColorInput }) => {
+            const scene = this.world.scene as any;
+            if (scene.config) {
+              scene.config.backgroundColor = new THREE.Color(target.color);
+            }
+          }}">
+        </bim-color-input>
+        
+        <bim-number-input 
+          slider step="0.1" label="Directional lights intensity" value="1.5" min="0.1" max="10"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            const scene = this.world.scene as any;
+            if (scene.config?.directionalLight) {
+              scene.config.directionalLight.intensity = target.value;
+            }
+          }}">
+        </bim-number-input>
+        
+        <bim-number-input 
+          slider step="0.1" label="Ambient light intensity" value="1" min="0.1" max="5"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            const scene = this.world.scene as any;
+            if (scene.config?.ambientLight) {
+              scene.config.ambientLight.intensity = target.value;
+            }
+          }}">
+        </bim-number-input>
+      </bim-panel-section>
+    `;
+  }
+
+  private createFileControls() {
+    return BUI.html`
+      <bim-panel-section collapsed label="File Controls">
+        <bim-button label="Load Online IFC" @click="${() => this.onLoadOnlineIfc()}"></bim-button>
+        <bim-button label="Load Local IFC" @click="${() => this.onLoadLocalIfc()}"></bim-button>
+        <bim-button label="Export fragments" @click="${() => this.onExportFragments()}"></bim-button>
+        <bim-button label="Dispose fragments" @click="${() => this.onDisposeFragments()}"></bim-button>
+      </bim-panel-section>
+    `;
+  }
+
   private createPanel() {
     const panel = BUI.Component.create<BUI.PanelSection>(() => {
       return BUI.html`
         <bim-panel label="Worlds Tutorial" class="options-menu">
-          <bim-panel-section collapsed label="Controls">
-            <bim-button label="Load Online IFC" @click="${() => this.onLoadOnlineIfc()}"></bim-button>
-            <bim-button label="Load Local IFC" @click="${() => this.onLoadLocalIfc()}"></bim-button>
-            <bim-button label="Export fragments" @click="${() => this.onExportFragments()}"></bim-button>
-            <bim-button label="Dispose fragments" @click="${() => this.onDisposeFragments()}"></bim-button>
-
-            <bim-checkbox label="Grid visible" checked 
-              @change="${({ target }: { target: BUI.Checkbox }) => {
-                this.grid.config.visible = target.value;
-              }}">
-            </bim-checkbox>
-
-            <bim-color-input 
-              label="Grid Color" color="#bbbbbb" 
-              @input="${({ target }: { target: BUI.ColorInput }) => {
-                this.grid.config.color = new THREE.Color(target.color);
-              }}">
-            </bim-color-input>
-            
-            <bim-number-input 
-              slider step="0.1" label="Grid primary size" value="1" min="0" max="10"
-              @change="${({ target }: { target: BUI.NumberInput }) => {
-                this.grid.config.primarySize = target.value;
-              }}">
-            </bim-number-input>
-            
-            <bim-number-input 
-              slider step="0.1" label="Grid secondary size" value="10" min="0" max="20"
-              @change="${({ target }: { target: BUI.NumberInput }) => {
-                this.grid.config.secondarySize = target.value;
-              }}">
-            </bim-number-input>
-
-            <bim-color-input 
-              label="Background Color" color="#202932" 
-              @input="${({ target }: { target: BUI.ColorInput }) => {
-                const scene = this.world.scene as any;
-                if (scene.config) {
-                  scene.config.backgroundColor = new THREE.Color(target.color);
-                }
-              }}">
-            </bim-color-input>
-            
-            <bim-number-input 
-              slider step="0.1" label="Directional lights intensity" value="1.5" min="0.1" max="10"
-              @change="${({ target }: { target: BUI.NumberInput }) => {
-                const scene = this.world.scene as any;
-                if (scene.config?.directionalLight) {
-                  scene.config.directionalLight.intensity = target.value;
-                }
-              }}">
-            </bim-number-input>
-            
-            <bim-number-input 
-              slider step="0.1" label="Ambient light intensity" value="1" min="0.1" max="5"
-              @change="${({ target }: { target: BUI.NumberInput }) => {
-                const scene = this.world.scene as any;
-                if (scene.config?.ambientLight) {
-                  scene.config.ambientLight.intensity = target.value;
-                }
-              }}">
-            </bim-number-input>
-          </bim-panel-section>
+          ${this.createFileControls()}
+          ${this.createGridControls()}
+          ${this.createSceneControls()}
         </bim-panel>
       `;
     });
