@@ -18,6 +18,12 @@ export class SceneManager {
     light.position.set(5, 5, 5);
     this.world.scene.directionalLights.set("main", light);
     this.world.scene.three.add(light);
+    
+    // Add ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    this.world.scene.ambientLights.set("ambient", ambientLight);
+    this.world.scene.three.add(ambientLight);
+  
   }
 
   createSampleScene() {
