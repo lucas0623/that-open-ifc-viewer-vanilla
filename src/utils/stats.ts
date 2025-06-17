@@ -4,16 +4,18 @@ import * as OBC from "@thatopen/components";
 export class StatsManager {
   private stats: Stats;
   private world: OBC.World;
+  private container: HTMLElement;
 
-  constructor(world: OBC.World) {
+  constructor(world: OBC.World, container: HTMLElement) {
     this.world = world;
     this.stats = new Stats();
+    this.container = container;
+    container.append(this.stats.dom);
   }
 
   initialize() {
     this.stats.showPanel(2);
-    document.body.append(this.stats.dom);
-    this.stats.dom.style.left = "0px";
+    this.stats.dom.style.left = this.container.offsetLeft + "px";
     this.stats.dom.style.zIndex = "unset";
 
     if (this.world.renderer) {

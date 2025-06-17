@@ -15,8 +15,8 @@ import { PanelManager } from './ui/panel';
 
 function main() {
   // Initialize components
-  const container = document.querySelector('#scene-container') as HTMLElement;
-  const uiContainer = document.querySelector('#ui-container') as HTMLElement;
+  const container = document.querySelector('.scene-container') as HTMLElement;
+  const uiContainer = document.querySelector('.ui-container') as HTMLElement;
   const components = new OBC.Components();
 
   // Initialize core managers
@@ -46,7 +46,8 @@ function main() {
   );
 
   // Initialize performance monitoring
-  const statsManager = new StatsManager(world);
+  const statsManager = new StatsManager(world,container);
+  
 
   // Setup everything
 
