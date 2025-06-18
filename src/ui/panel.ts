@@ -28,19 +28,22 @@ export class PanelManager {
   private uiContainer: HTMLElement;
   private ifcLoader: IfcLoaderService;
   private fragmentOperations: FragmentOperations;
-
+  private clipper: any; // Clipper from OBC Components
+  
   constructor(
     world: OBC.World,
     grid: { config: GridConfig },
     uiContainer: HTMLElement,
     ifcLoader: IfcLoaderService,
     fragmentOperations: FragmentOperations
-  ) {
-    this.world = world;
+  ) {    this.world = world;
     this.grid = grid;
     this.uiContainer = uiContainer;
     this.ifcLoader = ifcLoader;
     this.fragmentOperations = fragmentOperations;
+    // Get the clipper from components
+    const components = new OBC.Components();
+    this.clipper = components.get(OBC.Clipper);
   }
 
   initialize() {
@@ -48,7 +51,54 @@ export class PanelManager {
     this.createPanel();
     this.createMenuButton();
   }
-
+  private createClipperControls() {
+    return BUI.html`
+    
+      <bim-panel-section collapsed label="Clipper Controls">
+          
+        <bim-checkbox label="Clipper enabled" checked 
+          @change="${({ target }: { target: BUI.Checkbox }) => {
+            this.clipper.config.enabled = target.value;
+          }}">
+        </bim-checkbox>
+        
+        <bim-checkbox label="Clipper visible" checked 
+          @change="${({ target }: { target: BUI.Checkbox }) => {
+            this.clipper.config.visible = target.value;
+          }}">
+        </bim-checkbox>
+      
+        <bim-color-input 
+          label="Planes Color" color="#202932" 
+          @input="${({ target }: { target: BUI.ColorInput }) => {
+            this.clipper.config.color = new THREE.Color(target.color);
+          }}">
+        </bim-color-input>
+        
+        <bim-number-input 
+          slider step="0.01" label="Planes opacity" value="0.2" min="0.1" max="1"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            this.clipper.config.opacity = target.value;
+          }}">
+        </bim-number-input>
+        
+        <bim-number-input 
+          slider step="0.1" label="Planes size" value="5" min="2" max="10"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            this.clipper.config.size = target.value;
+          }}">
+        </bim-number-input>
+        
+        <bim-button 
+          label="Delete all" 
+          @click="${() => {
+            this.clipper.deleteAll();
+          }}">  
+        </bim-button>             
+        
+      </bim-panel-section>
+    `;
+  }
   private createGridControls() {
     return BUI.html`
       <bim-panel-section collapsed label="Grid Controls">
@@ -136,6 +186,7 @@ export class PanelManager {
           ${this.createFileControls()}
           ${this.createGridControls()}
           ${this.createSceneControls()}
+          ${this.createClipperControls()}
         </bim-panel>
       `;
     });
@@ -204,4 +255,4 @@ export class PanelManager {
   private onDisposeFragments() {
     this.fragmentOperations.disposeFragments();
   }
-} 
+}

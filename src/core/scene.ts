@@ -52,9 +52,9 @@ cube3.position.x = -3;
   cube3.rotation.y += oneDegree;
   cube3.rotation.z += oneDegree;
 }
-    if (this.world.renderer) {
-      this.world.renderer.onBeforeUpdate.add(rotateCubes);
-    }
+    // if (this.world.renderer) {
+    //   this.world.renderer.onBeforeUpdate.add(rotateCubes);
+    // }
 
     //cubes.updateMatrixWorld();
     

@@ -64,8 +64,24 @@ function main() {
   // Initialize raycaster
   const raycasterManager = new RaycasterManager(components, world);
   raycasterManager.initialize(cubes);
-  // Set cube as raycaster target
-  //raycasterManager.setTargets([cube]);
+
+  //Try Clipper
+  // const casters = components.get(OBC.Raycasters);
+  // casters.get(world);
+  // const clipper = components.get(OBC.Clipper);
+  // clipper.enabled = true;
+  // container.ondblclick = () => {
+  //   console.log("Double click detected");
+  // if (clipper.enabled) {
+  //   clipper.create(world);
+  //   clipper.visible = true;
+  //   console.log("Clipper created and visible");
+  // }
+//};
+
+
+
+
   
   // Set aspect ratio and update projection matrix
   (world.camera.three as THREE.PerspectiveCamera).aspect = container.clientWidth / container.clientHeight;
