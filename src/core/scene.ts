@@ -26,22 +26,40 @@ export class SceneManager {
   
   }
   createSampleScene() {
-    const material = new THREE.MeshLambertMaterial({
-      color: "yellow",
-      transparent: true,
-      opacity: 1.0,
-    });
+    const material = new THREE.MeshStandardMaterial({ color: "#6528D7" });
     const geometry = new THREE.BoxGeometry();
-    const cube = new THREE.Mesh(geometry, material);
-    this.world.scene.three.add(cube);
+    const cube1 = new THREE.Mesh(geometry, material);
+    const cube2 = new THREE.Mesh(geometry, material);
+    const cube3 = new THREE.Mesh(geometry, material);
+    this.world.scene.three.add(cube1,cube2,cube3);
+    const cubes = [cube1, cube2, cube3];
 
-    cube.rotation.x += Math.PI / 4.2;
-    cube.rotation.y += Math.PI / 4.2;
-    cube.rotation.z += Math.PI / 4.2;
-    cube.updateMatrixWorld();
+    cube1.rotation.x += Math.PI / 4.2;
+    cube1.rotation.y += Math.PI / 4.2;
+    cube1.rotation.z += Math.PI / 4.2;
+    cube1.position.y = 3;
+    cube2.position.x = 3;
+cube3.position.x = -3;
+
+
+
+    const oneDegree = Math.PI / 180;
+    function rotateCubes() {
+  cube1.rotation.x += oneDegree;
+  cube1.rotation.y += oneDegree;
+  cube2.rotation.x += oneDegree;
+  cube2.rotation.z += oneDegree;
+  cube3.rotation.y += oneDegree;
+  cube3.rotation.z += oneDegree;
+}
+    if (this.world.renderer) {
+      this.world.renderer.onBeforeUpdate.add(rotateCubes);
+    }
+
+    //cubes.updateMatrixWorld();
     
     // Return the cube so it can be used as a raycaster target
-    return cube;
+    return cubes;
   }
 
   getWorld() {
