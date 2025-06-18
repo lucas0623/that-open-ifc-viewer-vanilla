@@ -40,6 +40,7 @@ function main() {
 
   // Initialize UI
   const panel = new PanelManager(
+    components,
     world,
     grid,
     uiContainer,

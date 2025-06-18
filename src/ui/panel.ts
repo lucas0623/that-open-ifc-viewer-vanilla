@@ -3,6 +3,7 @@ import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
 import { IfcLoaderService } from '../services/ifcLoader';
 import { FragmentOperations } from '../services/fragmentOperations';
+import * as BUIC from "@thatopen/ui-obc";
 
 
 interface GridConfig {
@@ -23,6 +24,7 @@ interface GridConfig {
 // }
 
 export class PanelManager {
+  private components: OBC.Components;
   private world: OBC.World;
   private grid: { config: GridConfig };
   private uiContainer: HTMLElement;
@@ -31,18 +33,21 @@ export class PanelManager {
   private clipper: any; // Clipper from OBC Components
   
   constructor(
+    components: OBC.Components,
     world: OBC.World,
     grid: { config: GridConfig },
     uiContainer: HTMLElement,
     ifcLoader: IfcLoaderService,
     fragmentOperations: FragmentOperations
-  ) {    this.world = world;
+  ) {    
+    this.components = components;
+    this.world = world;
     this.grid = grid;
     this.uiContainer = uiContainer;
     this.ifcLoader = ifcLoader;
     this.fragmentOperations = fragmentOperations;
     // Get the clipper from components
-    const components = new OBC.Components();
+
     this.clipper = components.get(OBC.Clipper);
   }
 
@@ -168,26 +173,28 @@ export class PanelManager {
     `;
   }
 
-  private createFileControls() {
-    return BUI.html`
-      <bim-panel-section collapsed label="File Controls">
-        <bim-button label="Load Online IFC" @click="${() => this.onLoadOnlineIfc()}"></bim-button>
-        <bim-button label="Load Local IFC" @click="${() => this.onLoadLocalIfc()}"></bim-button>
-        <bim-button label="Export fragments" @click="${() => this.onExportFragments()}"></bim-button>
-        <bim-button label="Dispose fragments" @click="${() => this.onDisposeFragments()}"></bim-button>
-      </bim-panel-section>
-    `;
-  }
+  // private createFileControls() {
+  //   return BUI.html`
+  //     <bim-panel-section collapsed label="File Controls">
+  //       <bim-button label="Load Online IFC" @click="${() => this.onLoadOnlineIfc()}"></bim-button>
+  //       <bim-button label="Load Local IFC" @click="${() => this.onLoadLocalIfc()}"></bim-button>
+  //       <bim-button label="Export fragments" @click="${() => this.onExportFragments()}"></bim-button>
+  //       <bim-button label="Dispose fragments" @click="${() => this.onDisposeFragments()}"></bim-button>
+  //     </bim-panel-section>
+  //   `;
+  // }
 
   private createPanel() {
     const panel = BUI.Component.create<BUI.PanelSection>(() => {
       return BUI.html`
         <bim-panel label="Worlds Tutorial" class="options-menu">
-          ${this.createFileControls()}
+          
           ${this.createGridControls()}
           ${this.createSceneControls()}
           ${this.createClipperControls()}
+          ${this.createModelList()}
         </bim-panel>
+      
       `;
     });
 
@@ -213,6 +220,26 @@ export class PanelManager {
     this.uiContainer.append(button);
   }
 
+  private createModelList() {
+    const components = this.components;
+    const [modelsList] = BUIC.tables.modelsList({
+  components,
+  tags: { schema: true, viewDefinition: false },
+  actions: { download: false },
+});
+
+  return BUI.html`
+   <bim-panel-section collapsed label="File Controls">
+   <bim-button label="Load Online IFC" @click="${() => this.onLoadOnlineIfc()}"></bim-button>
+  <bim-button label="Load Local IFC" @click="${() => this.onLoadLocalIfc()}"></bim-button>
+    </bim-panel>
+    <bim-panel-section icon="mage:box-3d-fill" label="Loaded Models">
+      ${modelsList}
+    </bim-panel-section>
+   </bim-panel> 
+  `;
+}
+  
   private async onLoadOnlineIfc() {
     try {
       await this.ifcLoader.loadOnlineIfc();

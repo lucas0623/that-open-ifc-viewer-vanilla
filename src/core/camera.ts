@@ -10,9 +10,10 @@ export class CameraManager {
   }
 
   initialize() {
-    this.world.camera = new OBC.SimpleCamera(this.components);
+    this.world.camera = new OBC.OrthoPerspectiveCamera(this.components);
     if (this.world.camera?.controls) {
       this.world.camera.controls.setLookAt(3, 3, 3, 0, 0, 0);
     }
   }
+  
 } 
