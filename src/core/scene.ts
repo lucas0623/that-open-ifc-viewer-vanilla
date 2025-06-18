@@ -25,7 +25,6 @@ export class SceneManager {
     this.world.scene.three.add(ambientLight);
   
   }
-
   createSampleScene() {
     const material = new THREE.MeshLambertMaterial({
       color: "yellow",
@@ -40,6 +39,9 @@ export class SceneManager {
     cube.rotation.y += Math.PI / 4.2;
     cube.rotation.z += Math.PI / 4.2;
     cube.updateMatrixWorld();
+    
+    // Return the cube so it can be used as a raycaster target
+    return cube;
   }
 
   getWorld() {

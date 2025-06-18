@@ -12,6 +12,8 @@ import { IfcLoaderService } from './services/ifcLoader';
 import { FragmentOperations } from './services/fragmentOperations';
 import { StatsManager } from './utils/stats';
 import { PanelManager } from './ui/panel';
+import { SimpleAxesHelper } from './utils/simpleAxesHelper';
+import { RaycasterManager } from './utils/raycaster';
 
 function main() {
   // Initialize components
@@ -44,47 +46,31 @@ function main() {
     ifcLoader,
     fragmentOperations
   );
-
   // Initialize performance monitoring
   const statsManager = new StatsManager(world,container);
-  
+  // Initialize axes helper
+  const simpleAxesHelper = new SimpleAxesHelper(world, 5);
+  // Initialize raycaster
+  const raycasterManager = new RaycasterManager(components, world);
 
   // Setup everything
-
   ifcLoader.initialize();
   panel.initialize();
   statsManager.initialize();
+  simpleAxesHelper.initialize();
+  raycasterManager.initialize();
+    // Create sample scene
+  const cube = sceneManager.createSampleScene();
+  // Set cube as raycaster target
+  raycasterManager.setTargets([cube]);
   
-
-  // Create sample scene
-  sceneManager.createSampleScene();
-
   // Set aspect ratio and update projection matrix
   (world.camera.three as THREE.PerspectiveCamera).aspect = container.clientWidth / container.clientHeight;
   (world.camera.three as THREE.PerspectiveCamera).updateProjectionMatrix();
-  
-  //world.camera.three.updateProjectionMatrix();
-  // Debug logs for aspect ratio investigation
-  // if (world.camera && world.renderer) {
-  //   const camera = world.camera as any;
-  //   const renderer = world.renderer as any;
-  //   console.log('Camera properties:', {
-  //     aspect: camera.three.aspect,
-  //     fov: camera.three.fov,
-  //     near: camera.three.near,
-  //     far: camera.three.far
-  //   });
-  //   console.log('Renderer size:', {
-  //     width: renderer.three.domElement.width,
-  //     height: renderer.three.domElement.height
-  //   });
-  //   console.log('Container dimensions:', {
-  //     width: container.clientWidth,
-  //     height: container.clientHeight,
-  //     aspect: container.clientWidth / container.clientHeight
-  //   });
-  //}
-  
 }
 
+
 main()
+
+
+
